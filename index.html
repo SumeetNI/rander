@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Forecasting Water Consumption — LASSO • KNN • Ridge</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" referrerpolicy="no-referrer"/>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Chart.js for charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Nav -->
+    <header class="nav">
+      <div class="brand" data-route="home">
+        <span class="logo">💧</span>
+        <span class="title">Water Forecast</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#home" class="link" data-route="home">Home</a>
+        <a href="#predict" class="link" data-route="predict">Predict</a>
+        <a href="#compare" class="link" data-route="compare">Compare</a>
+        <a href="#analysis" class="link" data-route="analysis">Country</a>
+        <a href="#history" class="link" data-route="history">History</a>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main id="router-outlet">
+
+      <!-- HOME -->
+      <section id="home" class="route active">
+        <div class="hero card fade-in">
+          <div class="hero-text">
+            <h1>Water Consumption Forecasting</h1>
+            <p>Interactive forecasting using <b>LASSO</b>, <b>KNN</b>, and <b>Ridge Regression</b> across
+              <b>20 countries</b> (1990–2024). Explore trends, compare models, and save your scenario results.</p>
+            <div class="cta">
+              <a class="btn primary" href="#predict"><i class="fa-solid fa-wand-magic-sparkles"></i> Start Predicting</a>
+              <a class="btn ghost" href="#compare"><i class="fa-solid fa-chart-line"></i> Compare Models</a>
+            </div>
+          </div>
+          <div class="hero-viz">
+            <canvas id="homeSpark"></canvas>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <h3><i class="fa-solid fa-diagram-project"></i> Project Overview</h3>
+            <ul class="bullets">
+              <li>Three ML models tailored for time‑series style regression.</li>
+              <li>Dataset coverage: 20 countries, 1990–2024.</li>
+              <li>Responsive UI with smooth transitions.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3><i class="fa-solid fa-bolt"></i> Quick Actions</h3>
+            <div class="quick-actions">
+              <a class="chip" href="#predict">Predict</a>
+              <a class="chip" href="#compare">Compare</a>
+              <a class="chip" href="#history">Analyze Results</a>
+            </div>
+          </div>
+          <div class="card">
+            <h3><i class="fa-solid fa-rotate"></i> Recent Predictions</h3>
+            <div id="recentCarousel" class="carousel"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PREDICT -->
+      <section id="predict" class="route">
+        <div class="two-col">
+          <div class="left card slide-up">
+            <h2 class="section-title">Prediction Tool</h2>
+            <form id="predictForm" class="form">
+              <label>Country
+                <select id="country"></select>
+              </label>
+
+              <label>Year
+                <input id="year" type="number" min="1990" max="2100" value="2025" required/>
+              </label>
+
+              <fieldset class="models">
+                <legend>Choose Models</legend>
+                <label><input type="checkbox" name="model" value="lasso" checked/> LASSO</label>
+                <label><input type="checkbox" name="model" value="knn" checked/> KNN</label>
+                <label><input type="checkbox" name="model" value="ridge" checked/> Ridge</label>
+              </fieldset>
+
+              <button class="btn primary" type="submit"><i class="fa-solid fa-play"></i> Predict</button>
+            </form>
+
+            <div class="quick-stats">
+              <div class="stat">
+                <span class="label">Current</span>
+                <span id="statCurrent" class="value">—</span>
+              </div>
+              <div class="stat">
+                <span class="label">Predicted</span>
+                <span id="statPredicted" class="value">—</span>
+              </div>
+              <div class="stat">
+                <span class="label">Change</span>
+                <span id="statChange" class="value">—</span>
+              </div>
+            </div>
+          </div>
+          <div class="right card slide-up delay-1">
+            <h3 class="section-subtitle">Historical + Forecast</h3>
+            <canvas id="predictChart" height="140"></canvas>
+            <p class="note">Shaded band indicates an approximate confidence interval for the selected model.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- COMPARE -->
+      <section id="compare" class="route">
+        <div class="card">
+          <h2 class="section-title">Model Comparison</h2>
+          <div class="metrics-table-wrapper">
+          <table class="metrics-table" id="metricsTable">
+            <thead>
+              <tr><th>Metric</th><th>LASSO</th><th>KNN</th><th>Ridge</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>MAE</td><td data-k="mae-lasso">—</td><td data-k="mae-knn">—</td><td data-k="mae-ridge">—</td></tr>
+              <tr><td>RMSE</td><td data-k="rmse-lasso">—</td><td data-k="rmse-knn">—</td><td data-k="rmse-ridge">—</td></tr>
+              <tr><td>R²</td><td data-k="r2-lasso">—</td><td data-k="r2-knn">—</td><td data-k="r2-ridge">—</td></tr>
+              <tr><td>MAPE (%)</td><td data-k="mape-lasso">—</td><td data-k="mape-knn">—</td><td data-k="mape-ridge">—</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="section-subtitle">Visual Comparison</h3>
+          <canvas id="compareChart" height="160"></canvas>
+        </div>
+
+        <div class="grid-3 card transparent">
+          <div class="pill">
+            <b>LASSO</b>: feature selection • sparse solutions
+          </div>
+          <div class="pill">
+            <b>KNN</b>: simple • local pattern capture
+          </div>
+          <div class="pill">
+            <b>Ridge</b>: stable with collinearity • all features retained
+          </div>
+        </div>
+      </section>
+
+      <!-- COUNTRY ANALYSIS -->
+      <section id="analysis" class="route">
+        <div class="two-col">
+          <div class="left card">
+            <h2 class="section-title">Country Analysis</h2>
+            <label>Country
+              <select id="countryAnalysis"></select>
+            </label>
+            <div class="at-a-glance" id="countryFacts"></div>
+          </div>
+          <div class="right card">
+            <h3 class="section-subtitle">Trends</h3>
+            <canvas id="analysisChart" height="160"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- HISTORY -->
+      <section id="history" class="route">
+        <div class="card">
+          <h2 class="section-title">Prediction History</h2>
+          <div class="toolbar">
+            <button id="exportAll" class="btn ghost"><i class="fa-solid fa-file-export"></i> Export All (JSON)</button>
+            <button id="clearHistory" class="btn danger"><i class="fa-solid fa-trash"></i> Clear History</button>
+          </div>
+          <div class="table-wrap">
+            <table id="historyTable">
+              <thead>
+                <tr>
+                  <th>#</th><th>Country</th><th>Date</th><th>Year</th><th>Models</th><th>Predicted</th><th>Change</th><th>Action</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="footer">
+      <span>© <span id="yearNow"></span> Forecasting Water Consumption • LASSO · KNN · Ridge</span>
+      <a href="#home" class="to-top"><i class="fa-solid fa-arrow-up"></i></a>
+    </footer>
+  </div>
+
+  <!-- App Script -->
+  <script src="app.js"></script>
+</body>
+</html>

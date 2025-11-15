@@ -1,0 +1,146 @@
+/* ---------- Base Theme ---------- */
+:root{
+  --bg:#0b1220;
+  --panel:#111a2e;
+  --card:#0f1730;
+  --muted:#9db0d1;
+  --text:#e7eefc;
+  --accent:#6ac6ff;
+  --accent-2:#7bffce;
+  --danger:#ff6b6b;
+  --ring: rgba(122, 234, 255, .35);
+  --radius: 16px;
+  --shadow: 0 10px 30px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: radial-gradient(1200px 600px at 80% -10%, rgba(106,198,255,.12), transparent),
+              radial-gradient(900px 600px at -10% 20%, rgba(123,255,206,.10), transparent),
+              var(--bg);
+  color:var(--text);
+  letter-spacing:.2px;
+}
+
+/* ---------- Layout ---------- */
+.app-shell{min-height:100dvh;display:flex;flex-direction:column}
+.nav{
+  position:sticky; top:0; z-index:10;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:14px 20px;
+  backdrop-filter: blur(10px);
+  background:linear-gradient(180deg, rgba(10,18,32,.85), rgba(10,18,32,.55));
+  border-bottom:1px solid rgba(122,234,255,.12);
+}
+.brand{ display:flex; align-items:center; gap:10px; cursor:pointer }
+.brand .logo{ font-size:1.3rem }
+.brand .title{ font-weight:700; letter-spacing:.5px }
+.nav-links{ display:flex; gap:14px }
+.link{
+  text-decoration:none; color:var(--muted); padding:8px 12px; border-radius:999px;
+  transition:all .2s ease;
+}
+.link:hover, .link.active{ color:var(--text); background:rgba(122,234,255,.1) }
+
+main{ flex:1; padding:28px 18px; max-width:1200px; margin:0 auto }
+.footer{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px; color:var(--muted); font-size:.9rem; border-top:1px solid rgba(122,234,255,.12);
+}
+.footer .to-top{ color:var(--muted) }
+
+/* ---------- Components ---------- */
+.card{
+  background:linear-gradient(180deg, rgba(17,26,46,.9), rgba(12,20,38,.9));
+  border:1px solid rgba(122,234,255,.12);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:18px 18px 20px;
+}
+.card.transparent{ background:transparent; border-color:rgba(122,234,255,.08); box-shadow:none }
+
+.hero{ display:grid; grid-template-columns:1.1fr .9fr; gap:24px; align-items:center }
+.hero h1{ font-size:clamp(28px, 4vw, 44px); margin:0 0 8px }
+.hero p{ color:var(--muted); margin:0 0 18px }
+.cta{ display:flex; gap:12px; flex-wrap:wrap }
+.btn{
+  border:1px solid rgba(122,234,255,.25);
+  background: rgba(122,234,255,.12);
+  color:var(--text);
+  padding:10px 14px; border-radius:12px; text-decoration:none; display:inline-flex; gap:8px; align-items:center;
+  cursor:pointer; transition:.2s transform ease;
+}
+.btn:hover{ transform: translateY(-1px) }
+.btn.primary{ background: linear-gradient(135deg, var(--accent), var(--accent-2)); color:#0a1320; border:none; font-weight:700 }
+.btn.ghost{ background:transparent }
+.btn.danger{ background:transparent; border-color:rgba(255,107,107,.5); color:var(--danger) }
+
+.grid-3{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:18px }
+.quick-actions{ display:flex; gap:10px; flex-wrap:wrap }
+.chip{ padding:8px 12px; border-radius:999px; border:1px solid rgba(122,234,255,.18); color:var(--text); text-decoration:none }
+.bullets{ margin:6px 0 0 0; padding-left:18px; color:var(--muted) }
+.bullets li{ margin:6px 0 }
+
+.two-col{ display:grid; grid-template-columns: 420px 1fr; gap:18px }
+.section-title{ margin:6px 0 14px }
+.section-subtitle{ margin:2px 0 12px; color:var(--muted); font-weight:600 }
+.note{ color:var(--muted); font-size:.92rem }
+
+.form{ display:grid; gap:12px }
+.form label{ display:grid; gap:8px; font-size:.95rem }
+input, select, button{
+  font:inherit;
+}
+input, select{
+  padding:10px 12px; border-radius:12px; background:var(--panel);
+  border:1px solid rgba(122,234,255,.18); color:var(--text); outline:none;
+  transition: box-shadow .2s ease, border-color .2s ease;
+}
+input:focus, select:focus{
+  border-color:var(--accent); box-shadow: 0 0 0 6px var(--ring);
+}
+
+.models{ border:1px dashed rgba(122,234,255,.25); padding:10px 12px; border-radius:12px }
+.models label{ display:flex; gap:10px; align-items:center; color:var(--muted) }
+.models legend{ color:var(--muted) }
+
+.quick-stats{ margin-top:12px; display:grid; grid-template-columns:repeat(3,1fr); gap:10px }
+.stat{ background:linear-gradient(180deg, rgba(106,198,255,.18), rgba(106,198,255,.08));
+  border:1px solid rgba(122,234,255,.25); border-radius:14px; padding:12px }
+.stat .label{ color:#071324; font-weight:700 }
+.stat .value{ font-size:1.2rem }
+
+.metrics-table-wrapper{ overflow:auto }
+.metrics-table{ width:100%; border-collapse:collapse }
+.metrics-table th, .metrics-table td{
+  padding:10px 12px; border-bottom:1px solid rgba(122,234,255,.12); text-align:center
+}
+
+.pill{ background: rgba(123,255,206,.1); border:1px solid rgba(123,255,206,.25); padding:12px 14px; border-radius:12px }
+
+.table-wrap{ overflow:auto }
+#historyTable{ width:100%; border-collapse:collapse }
+#historyTable th, #historyTable td{ padding:10px 12px; border-bottom:1px solid rgba(122,234,255,.12); text-align:center }
+#historyTable .action{ display:flex; gap:8px; justify-content:center }
+
+.carousel{ display:flex; gap:12px; overflow:auto }
+.carousel .cardlet{ min-width:220px; background:rgba(12,20,38,.85); padding:12px; border-radius:12px; border:1px solid rgba(122,234,255,.12) }
+
+/* ---------- Router/Transitions ---------- */
+.route{ display:none; opacity:0; transform: translateY(6px); transition: all .35s ease }
+.route.active{ display:block; opacity:1; transform:none }
+.fade-in{ animation:fade .6s ease both }
+.slide-up{ animation:slideUp .6s ease both }
+.delay-1{ animation-delay:.2s }
+@keyframes fade{ from{opacity:0} to{opacity:1} }
+@keyframes slideUp{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none} }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1020px){
+  .hero{ grid-template-columns:1fr }
+  .two-col{ grid-template-columns:1fr; }
+  .grid-3{ grid-template-columns:1fr; }
+  .nav-links{ gap:8px; flex-wrap:wrap }
+}
